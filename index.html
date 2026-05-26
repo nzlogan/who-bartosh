@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <meta name="googlebot" content="noindex,nofollow" />
   <title>Logan — Software Developer</title>
   <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -441,6 +443,16 @@
     .project-card:hover { background: var(--surface); }
     .project-card:hover::after { opacity: 1; }
 
+    .project-card ul {
+      margin: 0 0 1rem;
+      padding-left: 1.2rem;
+      color: var(--dim);
+      line-height: 1.6;
+    }
+    .project-card li {
+      margin-bottom: 0.6rem;
+    }
+
     .project-icon {
       font-size: 1.5rem;
       margin-bottom: 1rem;
@@ -671,6 +683,8 @@
         <div class="about-text">
           <p>I'm a Wellington-based Software Developer with a focus on the <strong>Salesforce platform</strong> — building clean, maintainable solutions across Apex, integrations, and the broader ecosystem.</p>
           <p>I've worked in insurance, health, public sector and non-profit contexts, which has a way of teaching you that constraints aren't obstacles, they're just part of the design brief.</p>
+          <p>This site is also a private playground for random ideas that come to mind — the kind of Monday-night lab where one half-sleepy thought turns into a full-blown experiment.</p>
+          <p>Sometimes that means staying up until sunrise learning automation testing because it felt too good to leave alone.</p>
           <p>I care about doing things properly. That means understanding a problem fully before touching the keyboard, and not stopping until the solution is something worth being proud of.</p>
           <p>Outside of Salesforce, I work across web development, scripting, and cloud administration — with a broad enough toolkit to take on whatever a problem actually needs.</p>
         </div>
@@ -793,6 +807,19 @@
         <div class="section-label-line"></div>
       </div>
       <div class="projects-grid reveal">
+        <div class="project-card">
+          <div class="project-icon">🧪</div>
+          <div class="project-title">Current experiment</div>
+          <p class="project-desc">It's Monday night, been awake since 5am, and I'm building a random, over-complicated form just to see how far automation can chase it.</p>
+          <ul class="project-note-list">
+            <li>Start with a messy story and rough acceptance criteria, then turn them into scriptable test steps.</li>
+            <li>Match UI text line-by-line, including field names, labels and weird edge-case phrasing.</li>
+            <li>Capture screenshots on every pass so the story, the UI, and the test all line up.</li>
+            <li>Stress-test permutations, because smoke checks are not enough and early bugs are cheap to fix.</li>
+            <li>Make it feel like an experiment lab, not just another checklist.</li>
+          </ul>
+          <div class="project-stack">Story · ACs · Screenshots · Permutations · Chaos</div>
+        </div>
         <div class="project-card">
           <div class="project-icon">☁️</div>
           <div class="project-title">Salesforce Implementations</div>
