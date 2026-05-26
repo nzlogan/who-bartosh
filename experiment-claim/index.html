@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HavenHouse Insurance | Claim Submission</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --surface: #ffffff;
+      --surface-strong: #e9eef6;
+      --border: #d3dbe7;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #2563eb;
+      --accent-strong: #1d4ed8;
+      --danger: #dc2626;
+      --success: #146c43;
+      --shadow: 0 30px 80px rgba(15, 23, 42, 0.08);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
+    body { line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+
+    .page-shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: flex-start;
+      margin-bottom: 24px;
+    }
+
+    .brand {
+      display: grid;
+      gap: 10px;
+    }
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 16px;
+      box-shadow: var(--shadow);
+    }
+    .brand-logo span {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+    .brand-subtitle { color: var(--muted); font-size: 0.95rem; }
+
+    .hero-copy {
+      max-width: 620px;
+      padding: 24px 28px;
+      background: linear-gradient(180deg, rgba(37,99,235,0.08), rgba(255,255,255,0.7));
+      border-radius: 24px;
+      border: 1px solid rgba(37,99,235,0.15);
+      box-shadow: var(--shadow);
+    }
+    .hero-copy h1 { margin: 0 0 12px; font-size: clamp(2.2rem, 3vw, 3.2rem); }
+    .hero-copy p { margin: 0; color: var(--muted); }
+
+    main {
+      display: grid;
+      gap: 24px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 28px 32px;
+      gap: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-title {
+      margin: 0;
+      font-size: 1.35rem;
+      letter-spacing: -0.02em;
+    }
+    .panel-subtitle { color: var(--muted); font-size: 0.95rem; }
+
+    form {
+      display: grid;
+      gap: 24px;
+      padding: 32px;
+    }
+
+    fieldset {
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      background: var(--surface-strong);
+    }
+    fieldset + fieldset { margin-top: 16px; }
+    legend {
+      font-weight: 700;
+      margin-bottom: 18px;
+      padding: 0 8px;
+      color: var(--accent-strong);
+      font-size: 1rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+    .grid-full { display: grid; gap: 20px; }
+
+    label {
+      display: grid;
+      gap: 8px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    input[type="date"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      padding: 14px 16px;
+      font: inherit;
+      color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.12);
+    }
+    textarea { min-height: 120px; resize: vertical; }
+
+    .hint { font-size: 0.92rem; color: var(--muted); }
+    .label-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+    }
+    .required-star { color: var(--danger); font-weight: 700; }
+    .inline-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+    .radio-group,
+    .checkbox-group {
+      display: grid;
+      gap: 10px;
+    }
+    .radio-group label,
+    .checkbox-group label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      cursor: pointer;
+    }
+    .radio-group input,
+    .checkbox-group input {
+      margin: 0;
+      accent-color: var(--accent);
+    }
+
+    .error-message {
+      color: var(--danger);
+      font-size: 0.9rem;
+      margin-top: 4px;
+    }
+    .success-message {
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .summary-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+      color: var(--accent-strong);
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    .button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 52px;
+      border-radius: 16px;
+      border: none;
+      padding: 0 24px;
+      font-weight: 700;
+      font-size: 0.98rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .button:hover { transform: translateY(-1px); }
+    .button-primary {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 18px 45px rgba(37,99,235,0.18);
+    }
+    .button-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .button-link {
+      background: none;
+      border: none;
+      color: var(--accent-strong);
+      text-decoration: underline;
+      padding: 0;
+      font: inherit;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+
+    .button-link:hover {
+      color: #1e40af;
+    }
+
+    .output-panel {
+      display: none;
+      animation: fadeIn 0.35s ease-out;
+    }
+    .output-panel.active { display: block; }
+    .output-header { padding: 24px 32px; border-bottom: 1px solid var(--border); }
+    .output-body { padding: 32px; }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 24px;
+      border-radius: 20px;
+      overflow-x: auto;
+      max-height: 680px;
+    }
+
+    @media (max-width: 880px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header>
+      <div class="brand">
+        <div class="brand-logo">
+          <span>HavenHouse Claims</span>
+        </div>
+        <p class="brand-subtitle">Residential claim workflow for property damage, loss, weather events, and contents recovery.</p>
+      </div>
+      <div class="hero-copy">
+        <h1>Residential Property Claim</h1>
+        <p>Complete the detailed claim questionnaire to help our claims team understand the loss, validate coverage, and speed up approval.</p>
+      </div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <p class="panel-subtitle">Claim form for proof-of-concept testing</p>
+            <h2 class="panel-title">Step-by-step claim intake</h2>
+            <p class="hint"><strong>Required fields are marked with <span class="required-star">*</span>.</strong></p>
+          </div>
+          <span class="success-message">20+ questions, conditional validation, JSON output</span>
+        </div>
+
+        <form id="claimForm" novalidate>
+          <fieldset>
+            <legend>1. Policyholder details</legend>
+            <div class="grid-2">
+              <label>
+                <span class="label-title">Policy number <span class="required-star">*</span></span>
+                <input type="text" name="policyNumber" placeholder="HVI-1234-5678" required pattern="^HVI-[0-9]{4}-[0-9]{4}$" />
+                <span class="hint">Format: HVI-1234-5678</span>
+                <span class="error-message" data-error-for="policyNumber"></span>
+              </label>
+              <label>
+                <span class="label-title">Full name <span class="required-star">*</span></span>
+                <input type="text" name="fullName" placeholder="Taylor Morgan" required minlength="4" />
+                <span class="error-message" data-error-for="fullName"></span>
+              </label>
+            </div>
+            <div class="grid-2">
+              <label>
+                <span class="label-title">Email address <span class="required-star">*</span></span>
+                <input type="email" name="email" placeholder="taylor@example.com" required />
+                <span class="error-message" data-error-for="email"></span>
+              </label>
+              <label>
+                <span class="label-title">Phone number <span class="required-star">*</span></span>
+                <input type="tel" name="phone" placeholder="+64 21 555 010" required pattern="^\+?[0-9 \-()]{8,20}$" />
+                <span class="error-message" data-error-for="phone"></span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>2. Property and incident address</legend>
+            <div class="grid-2">
+              <label>
+                <span class="label-title">Property address <span class="required-star">*</span></span>
+                <input type="text" name="propertyAddress" placeholder="38 Thames Street, Wellington" required />
+                <span class="error-message" data-error-for="propertyAddress"></span>
+              </label>
+              <label>
+                Unit / apartment
+                <input type="text" name="unitNumber" placeholder="Unit 14 / Tower B" />
+              </label>
+            </div>
+            <div class="grid-3">
+              <label>
+                <span class="label-title">City / suburb <span class="required-star">*</span></span>
+                <input type="text" name="city" placeholder="Wellington" required />
+                <span class="error-message" data-error-for="city"></span>
+              </label>
+              <label>
+                <span class="label-title">Postal code <span class="required-star">*</span></span>
+                <input type="text" name="postalCode" placeholder="6011" required pattern="^[0-9]{3,6}$" />
+                <span class="error-message" data-error-for="postalCode"></span>
+              </label>
+              <label>
+                <span class="label-title">Property type <span class="required-star">*</span></span>
+                <select name="propertyType" required>
+                  <option value="">Select property type</option>
+                  <option>Detached house</option>
+                  <option>Townhouse</option>
+                  <option>Condominium</option>
+                  <option>Apartment</option>
+                  <option>Holiday home</option>
+                </select>
+                <span class="error-message" data-error-for="propertyType"></span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>3. Claim classification</legend>
+            <div class="grid-full">
+              <label>
+                <span class="label-title">Loss category <span class="required-star">*</span></span>
+                <select name="claimCategory" required>
+                  <option value="">Choose a claim category</option>
+                  <option value="houseDamage">House damage</option>
+                  <option value="contentsLoss">Contents loss</option>
+                  <option value="liability">Liability / third-party injury</option>
+                  <option value="weatherEvent">Weather event</option>
+                  <option value="theft">Theft or vandalism</option>
+                </select>
+                <span class="error-message" data-error-for="claimCategory"></span>
+              </label>
+            </div>
+            <div class="grid-2">
+              <label>
+                <span class="label-title">Date of incident <span class="required-star">*</span></span>
+                <input type="date" name="incidentDate" required />
+                <span class="hint">Cannot be a future date or more than 24 months old.</span>
+                <span class="error-message" data-error-for="incidentDate"></span>
+              </label>
+              <label>
+                Time of incident
+                <input type="text" name="incidentTime" placeholder="14:30" pattern="^([01]?[0-9]|2[0-3]):[0-5][0-9]$" />
+                <span class="hint">Optional, use HH:MM format if known.</span>
+                <span class="error-message" data-error-for="incidentTime"></span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset id="houseDamagePanel" class="conditional-panel" style="display:none;">
+            <legend>4. House damage details</legend>
+            <p class="hint">This section appears for house damage, weather event, or theft claims and includes required structural details.</p>
+            <div class="grid-3">
+              <label>
+                Structural damage?
+                <select name="structuralDamage">
+                  <option value="">Select</option>
+                  <option>None</option>
+                  <option>Minor</option>
+                  <option>Moderate</option>
+                  <option>Severe</option>
+                </select>
+              </label>
+              <label>
+                <span class="label-title">Roof condition <span class="required-star">*</span></span>
+                <select name="roofCondition">
+                  <option value="">Select</option>
+                  <option>Intact</option>
+                  <option>Damaged</option>
+                  <option>Partially collapsed</option>
+                  <option>Missing shingles</option>
+                </select>
+              </label>
+              <label>
+                <span class="label-title">Foundation / basement <span class="required-star">*</span></span>
+                <select name="foundationCondition">
+                  <option value="">Select</option>
+                  <option>Dry</option>
+                  <option>Moisture present</option>
+                  <option>Cracks visible</option>
+                  <option>Flooded</option>
+                </select>
+              </label>
+            </div>
+            <div class="grid-2">
+              <label>
+                Windows damaged?
+                <select name="windowDamage">
+                  <option value="">Select</option>
+                  <option>No</option>
+                  <option>Yes, broken</option>
+                  <option>Yes, cracked</option>
+                </select>
+              </label>
+              <label>
+                Electricity / utilities affected?
+                <select name="utilitiesAffected">
+                  <option value="">Select</option>
+                  <option>No</option>
+                  <option>Yes, power</option>
+                  <option>Yes, water</option>
+                  <option>Yes, gas</option>
+                </select>
+              </label>
+            </div>
+            <label>
+              Describe the damage to the building shell
+              <textarea name="houseDamageDescription" placeholder="Describe broken walls, roof breach, smoke damage, collapsed deck, etc."></textarea>
+            </label>
+            <label>
+              Have emergency repairs already begun?
+              <select name="emergencyRepairs">
+                <option value="">Select</option>
+                <option>No</option>
+                <option>Yes, temporary board-up</option>
+                <option>Yes, water extraction</option>
+                <option>Yes, structural shoring</option>
+              </select>
+            </label>
+          </fieldset>
+
+          <fieldset id="contentsPanel" class="conditional-panel" style="display:none;">
+            <legend>5. Contents and valuables</legend>
+            <p class="hint">This section appears for contents claims and helps capture loss categories and estimated values.</p>
+            <label class="hint">Select the types of items impacted by the claim.</label>
+            <div class="checkbox-group">
+              <label><input type="checkbox" name="contentsItems" value="Furniture" /> Furniture</label>
+              <label><input type="checkbox" name="contentsItems" value="Appliances" /> Appliances</label>
+              <label><input type="checkbox" name="contentsItems" value="Electronics" /> Electronics</label>
+              <label><input type="checkbox" name="contentsItems" value="Artwork" /> Artwork and collectibles</label>
+              <label><input type="checkbox" name="contentsItems" value="Clothing" /> Clothing and textiles</label>
+              <label><input type="checkbox" name="contentsItems" value="Jewellery" /> Jewellery and valuables</label>
+              <label><input type="checkbox" name="contentsItems" value="Documents" /> Important documents</label>
+            </div>
+            <label>
+              Estimated total contents loss
+              <input type="number" name="contentsLossEstimate" placeholder="e.g. 12000" min="0" step="50" />
+              <span class="hint">Enter an approximate value in your local currency.</span>
+              <span class="error-message" data-error-for="contentsLossEstimate"></span>
+            </label>
+            <label>
+              High-value item declared?
+              <select name="highValueDeclared">
+                <option value="">Select</option>
+                <option>No</option>
+                <option>Yes, jewellery</option>
+                <option>Yes, artwork</option>
+                <option>Yes, electronics over $5K</option>
+              </select>
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>6. Context and cause</legend>
+            <div class="grid-2">
+              <label>
+                <span class="label-title">Was weather a factor? <span class="required-star">*</span></span>
+                <select name="weatherInvolved" required>
+                  <option value="">Select</option>
+                  <option>No</option>
+                  <option>Yes, storm / wind</option>
+                  <option>Yes, flood</option>
+                  <option>Yes, hail</option>
+                  <option>Yes, wildfire smoke</option>
+                </select>
+                <span class="error-message" data-error-for="weatherInvolved"></span>
+              </label>
+              <label>
+                <span class="label-title">Was the damage intentional? <span class="required-star">*</span></span>
+                <select name="intentionalDamage" required>
+                  <option value="">Select</option>
+                  <option>No</option>
+                  <option>Yes, vandalism</option>
+                  <option>Yes, intentional action by occupant</option>
+                  <option>Unknown</option>
+                </select>
+                <span class="error-message" data-error-for="intentionalDamage"></span>
+              </label>
+            </div>
+            <label>
+              <span class="label-title">Incident description <span class="required-star">*</span></span>
+              <textarea name="incidentDescription" required placeholder="Provide a detailed narrative of what happened, where, and how the damage began."></textarea>
+              <span class="error-message" data-error-for="incidentDescription"></span>
+            </label>
+          </fieldset>
+
+          <fieldset id="intentPanel" class="conditional-panel" style="display:none;">
+            <legend>7. Intentional damage explanation</legend>
+            <p class="hint">This section is required when intentional damage or vandalism is selected.</p>
+            <label>
+              Explain why the damage occurred
+              <textarea name="intentExplanation" placeholder="For example: confirmed vandalism, a dispute, or tenant negligence."></textarea>
+              <span class="error-message" data-error-for="intentExplanation"></span>
+            </label>
+          </fieldset>
+
+          <fieldset>
+            <legend>8. Supporting details</legend>
+            <div class="grid-2">
+              <label>
+                <span class="label-title">Police report filed? <span class="required-star">*</span></span>
+                <select name="policeReport" required>
+                  <option value="">Select</option>
+                  <option>No</option>
+                  <option>Yes</option>
+                </select>
+                <span class="error-message" data-error-for="policeReport"></span>
+              </label>
+              <label>
+                <span class="label-title">Emergency priority <span class="required-star">*</span></span>
+                <select name="priority" required>
+                  <option value="">Select</option>
+                  <option>Standard review</option>
+                  <option>Urgent board-up</option>
+                  <option>Temporary accommodation</option>
+                </select>
+                <span class="error-message" data-error-for="priority"></span>
+              </label>
+            </div>
+            <div class="grid-2">
+              <label>
+                <span class="label-title">Estimated total loss <span class="required-star">*</span></span>
+                <input type="number" name="totalLoss" placeholder="e.g. 27000" min="1" required />
+                <span class="error-message" data-error-for="totalLoss"></span>
+              </label>
+              <label>
+                <span class="label-title">Were tenants present? <span class="required-star">*</span></span>
+                <select name="tenantPresent" required>
+                  <option value="">Select</option>
+                  <option>No</option>
+                  <option>Yes, primary tenant</option>
+                  <option>Yes, short-term visitor</option>
+                </select>
+                <span class="error-message" data-error-for="tenantPresent"></span>
+              </label>
+            </div>
+            <div class="grid-2">
+              <label>
+                Mortgage or lien holder
+                <input type="text" name="lienHolder" placeholder="e.g. Pacific Trust Mortgage" />
+              </label>
+              <label>
+                Claim representative name
+                <input type="text" name="representativeName" placeholder="e.g. Jordan Reed" />
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset id="policePanel" class="conditional-panel" style="display:none;">
+            <legend>9. Police report details</legend>
+            <p class="hint">Provide this information only when a police report has been filed.</p>
+            <div class="grid-2">
+              <label>
+                Report number
+                <input type="text" name="policeReportNumber" placeholder="RP-2026-0098" />
+                <span class="error-message" data-error-for="policeReportNumber"></span>
+              </label>
+              <label>
+                Officer / station
+                <input type="text" name="officerName" placeholder="Officer Miller / Central Precinct" />
+                <span class="error-message" data-error-for="officerName"></span>
+              </label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>10. Additional claimant notes</legend>
+            <label>
+              Supporting comments or claimant authorization
+              <textarea name="claimNotes" placeholder="Add any special comments, access restrictions, or follow-up instructions."></textarea>
+            </label>
+            <label class="checkbox-group">
+              <input type="checkbox" name="confirmAccuracy" value="confirmed" required /> I confirm that the information provided in this claim is accurate to the best of my knowledge <span class="required-star">*</span>
+              <span class="error-message" data-error-for="confirmAccuracy"></span>
+            </label>
+          </fieldset>
+
+          <div class="actions">
+            <button type="submit" class="button button-primary">Submit claim</button>
+            <button type="button" id="resetForm" class="button button-secondary">Reset form</button>
+            <button type="button" id="populateTestData" class="button-link">Populate test data</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel output-panel" id="outputPanel">
+        <div class="output-header">
+          <h2 class="panel-title">Claim JSON output</h2>
+          <p class="panel-subtitle">The data below is generated from the completed form and is suitable for automation testing.</p>
+        </div>
+        <div class="output-body">
+          <pre id="outputJson">{ }</pre>
+          <div class="actions" style="margin-top: 24px;">
+            <button type="button" class="button button-secondary" id="editClaim">Edit claim</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const form = document.getElementById('claimForm');
+    const outputPanel = document.getElementById('outputPanel');
+    const outputJson = document.getElementById('outputJson');
+    const resetButton = document.getElementById('resetForm');
+    const editButton = document.getElementById('editClaim');
+
+    const houseDamagePanel = document.getElementById('houseDamagePanel');
+    const contentsPanel = document.getElementById('contentsPanel');
+    const intentPanel = document.getElementById('intentPanel');
+    const policePanel = document.getElementById('policePanel');
+
+    const conditionalPanels = {
+      houseDamage: houseDamagePanel,
+      contentsLoss: contentsPanel,
+      lossTypes: { intentionalDamage: intentPanel, policeReport: policePanel }
+    };
+
+    function showPanel(panel, visible) {
+      panel.style.display = visible ? 'block' : 'none';
+    }
+
+    function updateConditionals() {
+      const category = form.claimCategory.value;
+      showPanel(houseDamagePanel, category === 'houseDamage' || category === 'weatherEvent' || category === 'theft');
+      showPanel(contentsPanel, category === 'contentsLoss');
+      showPanel(intentPanel, form.intentionalDamage.value.startsWith('Yes'));
+      showPanel(policePanel, form.policeReport.value === 'Yes');
+    }
+
+    function displayError(fieldName, message) {
+      const element = document.querySelector(`[data-error-for="${fieldName}"]`);
+      if (element) element.textContent = message;
+    }
+
+    function clearErrors() {
+      document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+    }
+
+    function validateForm() {
+      clearErrors();
+      let valid = true;
+      const now = new Date();
+      const incidentDate = form.incidentDate.value ? new Date(form.incidentDate.value) : null;
+      const twoYearsAgo = new Date(now.getFullYear() - 2, now.getMonth(), now.getDate());
+
+      if (!form.policyNumber.value.trim()) {
+        displayError('policyNumber', 'Policy number is required.');
+        valid = false;
+      } else if (!/^HVI-[0-9]{4}-[0-9]{4}$/.test(form.policyNumber.value.trim())) {
+        displayError('policyNumber', 'Policy number must match the HVI-1234-5678 format.');
+        valid = false;
+      }
+
+      if (!form.fullName.value.trim() || form.fullName.value.trim().length < 4) {
+        displayError('fullName', 'Full name is required and should be at least 4 characters.');
+        valid = false;
+      }
+
+      if (!form.email.value.trim()) {
+        displayError('email', 'Email address is required.');
+        valid = false;
+      }
+
+      if (!form.phone.value.trim()) {
+        displayError('phone', 'Phone number is required.');
+        valid = false;
+      } else if (!/^\+?[0-9 \-()]{8,20}$/.test(form.phone.value.trim())) {
+        displayError('phone', 'Phone number format looks invalid.');
+        valid = false;
+      }
+
+      if (!form.propertyAddress.value.trim()) {
+        displayError('propertyAddress', 'Property address is required.');
+        valid = false;
+      }
+      if (!form.city.value.trim()) {
+        displayError('city', 'City / suburb is required.');
+        valid = false;
+      }
+      if (!form.postalCode.value.trim() || !/^[0-9]{3,6}$/.test(form.postalCode.value.trim())) {
+        displayError('postalCode', 'Postal code is required and must be numeric.');
+        valid = false;
+      }
+      if (!form.propertyType.value) {
+        displayError('propertyType', 'Property type is required.');
+        valid = false;
+      }
+      if (!form.claimCategory.value) {
+        displayError('claimCategory', 'Claim category is required.');
+        valid = false;
+      }
+      if (!form.incidentDate.value) {
+        displayError('incidentDate', 'Date of incident is required.');
+        valid = false;
+      } else if (incidentDate > now) {
+        displayError('incidentDate', 'Incident date cannot be in the future.');
+        valid = false;
+      } else if (incidentDate < twoYearsAgo) {
+        displayError('incidentDate', 'Incident date must be within the last 24 months.');
+        valid = false;
+      }
+      if (form.incidentTime.value && !/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(form.incidentTime.value.trim())) {
+        displayError('incidentTime', 'Time must be formatted as HH:MM.');
+        valid = false;
+      }
+      if (!form.weatherInvolved.value) {
+        displayError('weatherInvolved', 'Please indicate if weather was involved.');
+        valid = false;
+      }
+      if (!form.intentionalDamage.value) {
+        displayError('intentionalDamage', 'Please indicate whether the damage was intentional.');
+        valid = false;
+      }
+      if (!form.incidentDescription.value.trim() || form.incidentDescription.value.trim().length < 20) {
+        displayError('incidentDescription', 'Provide a detailed incident description with at least 20 characters.');
+        valid = false;
+      }
+      if (!form.policeReport.value) {
+        displayError('policeReport', 'Please indicate whether a police report was filed.');
+        valid = false;
+      }
+      if (!form.priority.value) {
+        displayError('priority', 'Select a priority level for the claim.');
+        valid = false;
+      }
+      if (!form.totalLoss.value || Number(form.totalLoss.value) <= 0) {
+        displayError('totalLoss', 'Estimated total loss must be a positive number.');
+        valid = false;
+      } else if (form.priority.value === 'Urgent board-up' && Number(form.totalLoss.value) < 500) {
+        displayError('totalLoss', 'Urgent claims should typically exceed 500 in estimated loss.');
+        valid = false;
+      }
+      if (!form.tenantPresent.value) {
+        displayError('tenantPresent', 'Please indicate tenant occupancy.');
+        valid = false;
+      }
+      if (!form.confirmAccuracy.checked) {
+        displayError('confirmAccuracy', 'You must confirm the information is accurate.');
+        valid = false;
+      }
+
+      const category = form.claimCategory.value;
+      if (category === 'houseDamage' || category === 'weatherEvent' || category === 'theft') {
+        const roof = form.roofCondition.value;
+        const foundation = form.foundationCondition.value;
+        if (!roof) {
+          displayError('roofCondition', 'Roof condition is required for house damage-related claims.');
+          valid = false;
+        }
+        if (!foundation) {
+          displayError('foundationCondition', 'Foundation condition is required for house damage-related claims.');
+          valid = false;
+        }
+      }
+      if (category === 'contentsLoss') {
+        const contentsChecked = Array.from(form.querySelectorAll('input[name="contentsItems"]:checked')).length;
+        if (contentsChecked === 0) {
+          displayError('contentsItems', 'Please select at least one type of contents affected.');
+          valid = false;
+        }
+        if (!form.contentsLossEstimate.value || Number(form.contentsLossEstimate.value) <= 0) {
+          displayError('contentsLossEstimate', 'Provide a valid estimated contents loss.');
+          valid = false;
+        }
+      }
+      if (form.intentionalDamage.value.startsWith('Yes')) {
+        if (!form.intentExplanation.value.trim() || form.intentExplanation.value.trim().length < 15) {
+          displayError('intentExplanation', 'Provide an explanation for intentional damage with at least 15 characters.');
+          valid = false;
+        }
+      }
+      if (form.policeReport.value === 'Yes') {
+        if (!form.policeReportNumber.value.trim()) {
+          displayError('policeReportNumber', 'Police report number is required when a report was filed.');
+          valid = false;
+        }
+        if (!form.officerName.value.trim()) {
+          displayError('officerName', 'Officer or station name is required when a police report exists.');
+          valid = false;
+        }
+      }
+
+      if (form.highValueDeclared.value && form.highValueDeclared.value !== 'No' && category !== 'contentsLoss') {
+        displayError('highValueDeclared', 'High-value items can only be declared for contents loss claims.');
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    function collectFormData() {
+      const formData = new FormData(form);
+      const items = Array.from(form.querySelectorAll('input[name="contentsItems"]:checked')).map(el => el.value);
+      const data = {
+        policyNumber: formData.get('policyNumber') || '',
+        fullName: formData.get('fullName') || '',
+        email: formData.get('email') || '',
+        phone: formData.get('phone') || '',
+        propertyAddress: formData.get('propertyAddress') || '',
+        unitNumber: formData.get('unitNumber') || '',
+        city: formData.get('city') || '',
+        postalCode: formData.get('postalCode') || '',
+        propertyType: formData.get('propertyType') || '',
+        claimCategory: formData.get('claimCategory') || '',
+        incidentDate: formData.get('incidentDate') || '',
+        incidentTime: formData.get('incidentTime') || '',
+        weatherInvolved: formData.get('weatherInvolved') || '',
+        intentionalDamage: formData.get('intentionalDamage') || '',
+        incidentDescription: formData.get('incidentDescription') || '',
+        confirmAccuracy: formData.get('confirmAccuracy') === 'confirmed',
+        policeReport: formData.get('policeReport') || '',
+        priority: formData.get('priority') || '',
+        totalLoss: Number(formData.get('totalLoss') || 0),
+        tenantPresent: formData.get('tenantPresent') || '',
+        lienHolder: formData.get('lienHolder') || '',
+        representativeName: formData.get('representativeName') || '',
+        claimNotes: formData.get('claimNotes') || '',
+        support: {
+          roofCondition: formData.get('roofCondition') || '',
+          foundationCondition: formData.get('foundationCondition') || '',
+          structuralDamage: formData.get('structuralDamage') || '',
+          windowDamage: formData.get('windowDamage') || '',
+          utilitiesAffected: formData.get('utilitiesAffected') || '',
+          houseDamageDescription: formData.get('houseDamageDescription') || '',
+          emergencyRepairs: formData.get('emergencyRepairs') || '',
+          contentsItems: items,
+          contentsLossEstimate: Number(formData.get('contentsLossEstimate') || 0),
+          highValueDeclared: formData.get('highValueDeclared') || '',
+          intentExplanation: formData.get('intentExplanation') || '',
+          policeReportNumber: formData.get('policeReportNumber') || '',
+          officerName: formData.get('officerName') || ''
+        }
+      };
+      return data;
+    }
+
+    function populateTestData() {
+      const sample = {
+        policyNumber: 'HVI-2398-7102',
+        fullName: 'Morgan Lee',
+        email: 'morgan.lee@example.com',
+        phone: '+64 21 555 0100',
+        propertyAddress: '38 Thames Street, Wellington',
+        unitNumber: 'Unit 14 / Tower B',
+        city: 'Wellington',
+        postalCode: '6011',
+        propertyType: 'Detached house',
+        claimCategory: 'houseDamage',
+        incidentDate: '2026-02-12',
+        incidentTime: '14:30',
+        weatherInvolved: 'Yes, storm / wind',
+        intentionalDamage: 'No',
+        incidentDescription: 'Severe wind gusts tore off roof shingles and damaged the north wall during the evening storm.',
+        structuralDamage: 'Moderate',
+        roofCondition: 'Damaged',
+        foundationCondition: 'Moisture present',
+        windowDamage: 'Yes, broken',
+        utilitiesAffected: 'Yes, power',
+        houseDamageDescription: 'Multiple roof tiles displaced, external cladding torn, and a broken upstairs window.',
+        emergencyRepairs: 'Yes, temporary board-up',
+        policeReport: 'No',
+        priority: 'Urgent board-up',
+        totalLoss: '15200',
+        tenantPresent: 'No',
+        lienHolder: 'Pacific Trust Mortgage',
+        representativeName: 'Jordan Reed',
+        claimNotes: 'Access via rear gate after 9am.',
+        confirmAccuracy: true
+      };
+
+      Object.entries(sample).forEach(([key, value]) => {
+        const field = form.elements[key];
+        if (!field) return;
+        if (field.type === 'checkbox') {
+          field.checked = Boolean(value);
+          return;
+        }
+        field.value = value;
+      });
+
+      form.querySelectorAll('input[name="contentsItems"]').forEach(input => input.checked = false);
+      updateConditionals();
+    }
+
+    function renderOutput(data) {
+      outputJson.textContent = JSON.stringify(data, null, 2);
+    }
+
+    form.addEventListener('change', updateConditionals);
+    form.addEventListener('input', updateConditionals);
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      updateConditionals();
+      if (!validateForm()) {
+        outputPanel.classList.remove('active');
+        return;
+      }
+      const data = collectFormData();
+      renderOutput(data);
+      outputPanel.classList.add('active');
+      window.scrollTo({ top: outputPanel.offsetTop - 20, behavior: 'smooth' });
+    });
+
+    resetButton.addEventListener('click', () => {
+      form.reset();
+      clearErrors();
+      outputPanel.classList.remove('active');
+      updateConditionals();
+    });
+
+    document.getElementById('populateTestData').addEventListener('click', () => {
+      populateTestData();
+    });
+
+    editButton.addEventListener('click', () => {
+      outputPanel.classList.remove('active');
+      window.scrollTo({ top: form.offsetTop - 20, behavior: 'smooth' });
+    });
+
+    window.addEventListener('DOMContentLoaded', updateConditionals);
+  </script>
+</body>
+</html>
